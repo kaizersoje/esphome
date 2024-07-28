@@ -46,7 +46,7 @@ void Powerpal::parse_battery_(const uint8_t *data, uint16_t length) {
 }
 
 void Powerpal::parse_measurement_(const uint8_t *data, uint16_t length) {
-  ESP_LOGD(TAG, "Meaurement: DEC(%d): 0x%s", length, this->pkt_to_hex_(data, length).c_str());
+  ESP_LOGD(TAG, "Measurement: DEC(%d): 0x%s", length, this->pkt_to_hex_(data, length).c_str());
   if (length >= 6) {
     time_t unix_time = data[0];
     unix_time += (data[1] << 8);
@@ -222,7 +222,7 @@ void Powerpal::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
       }
       // reading batch size
       if (param->read.handle == this->reading_batch_size_char_handle_) {
-        ESP_LOGD(TAG, "Recieved reading_batch_size read event");
+        ESP_LOGD(TAG, "Received reading_batch_size read event");
         this->decode_(param->read.value, param->read.value_len);
         if (param->read.value_len == 4) {
           if (param->read.value[0] != this->reading_batch_size_[0]) {
@@ -251,28 +251,28 @@ void Powerpal::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
 
       // battery
       if (param->read.handle == this->battery_char_handle_) {
-        ESP_LOGD(TAG, "Recieved battery read event");
+        ESP_LOGD(TAG, "Received battery read event");
         this->parse_battery_(param->read.value, param->read.value_len);
         break;
       }
 
       // firmware
       if (param->read.handle == this->firmware_char_handle_) {
-        ESP_LOGD(TAG, "Recieved firmware read event");
+        ESP_LOGD(TAG, "Received firmware read event");
         this->decode_(param->read.value, param->read.value_len);
         break;
       }
 
       // led sensitivity
       if (param->read.handle == this->led_sensitivity_char_handle_) {
-        ESP_LOGD(TAG, "Recieved led sensitivity read event");
+        ESP_LOGD(TAG, "Received led sensitivity read event");
         this->decode_(param->read.value, param->read.value_len);
         break;
       }
 
       // serialNumber
       if (param->read.handle == this->serial_number_char_handle_) {
-        ESP_LOGI(TAG, "Recieved uuid read event");
+        ESP_LOGI(TAG, "Received uuid read event");
         this->powerpal_device_id_ = this->uuid_to_device_id_(param->read.value, param->read.value_len);
         ESP_LOGI(TAG, "Powerpal device id: %s", this->powerpal_device_id_.c_str());
 
@@ -281,7 +281,7 @@ void Powerpal::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
 
       // uuid
       if (param->read.handle == this->uuid_char_handle_) {
-        ESP_LOGI(TAG, "Recieved serial_number read event");
+        ESP_LOGI(TAG, "Received serial_number read event");
         this->powerpal_apikey_ = this->serial_to_apikey_(param->read.value, param->read.value_len);
         ESP_LOGI(TAG, "Powerpal apikey: %s", this->powerpal_apikey_.c_str());
 
@@ -380,14 +380,14 @@ void Powerpal::gattc_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gat
 
       // battery
       if (param->notify.handle == this->battery_char_handle_) {
-        ESP_LOGD(TAG, "Recieved battery notify event");
+        ESP_LOGD(TAG, "Received battery notify event");
         this->parse_battery_(param->notify.value, param->notify.value_len);
         break;
       }
 
       // measurement
       if (param->notify.handle == this->measurement_char_handle_) {
-        ESP_LOGD(TAG, "Recieved measurement notify event");
+        ESP_LOGD(TAG, "Received measurement notify event");
         this->parse_measurement_(param->notify.value, param->notify.value_len);
         break;
       }
